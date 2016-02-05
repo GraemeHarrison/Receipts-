@@ -16,6 +16,6 @@
 @dynamic amount;
 @dynamic note;
 @dynamic timeStamp;
-@dynamic tag;
+@dynamic tags;
 
 @end

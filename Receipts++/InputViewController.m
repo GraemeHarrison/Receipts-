@@ -11,9 +11,8 @@
 #import "Receipt.h"
 #import "Tag.h"
 
-@interface InputViewController () <UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface InputViewController () <UITextFieldDelegate, UIPickerViewDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) NSArray *tagsArray;
 @property (nonatomic, strong) NSMutableSet *selectedTagsSet;
 
 @end
@@ -36,9 +35,8 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    // Change functionality of return key based on who is the first responder
     if (textField == self.amountTextField) {
-        [self.noteTextField becomeFirstResponder];
+        [self.amountTextField resignFirstResponder];
     } else if (textField == self.noteTextField) {
         [self.noteTextField resignFirstResponder];
     }
@@ -57,53 +55,6 @@
     
     self.selectedTagsSet = [[NSMutableSet alloc]init];
 
-    [self fetchTags];
-    if (self.tagsArray.count == 0) {
-        [self createTags];
-    }
-}
-
--(void)fetchTags {
-    NSError *error;
-    
-    // Fetch object
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Tag"
-                                              inManagedObjectContext:self.managedObjectContext];
-    [fetchRequest setEntity:entity];
-    
-    self.tagsArray = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    if (self.tagsArray == nil) {
-        // Handle the error.
-    }
-}
-
--(void)createTags {
-    NSError *error;
-    
-    // Create new object
-    Tag *tag1 = [NSEntityDescription
-                           insertNewObjectForEntityForName:@"Tag"
-                           inManagedObjectContext:self.managedObjectContext];
-    tag1.tagName = @"Personal";
-    
-    Tag *tag2 = [NSEntityDescription
-                 insertNewObjectForEntityForName:@"Tag"
-                 inManagedObjectContext:self.managedObjectContext];
-    tag2.tagName = @"Family";
-    
-    Tag *tag3 = [NSEntityDescription
-                 insertNewObjectForEntityForName:@"Tag"
-                 inManagedObjectContext:self.managedObjectContext];
-    tag3.tagName = @"Business";
-    
-    // Save object
-    if (![self.managedObjectContext save:&error]) {
-        // Handle the error.
-    }
-    
-    [self fetchTags];
 }
 
 - (void)didReceiveMemoryWarning {
